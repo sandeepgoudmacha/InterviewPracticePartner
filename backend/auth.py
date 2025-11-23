@@ -1,3 +1,4 @@
+import os
 from fastapi import HTTPException, Header, Depends
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
@@ -5,9 +6,9 @@ from config import users_collection
 import argon2
 
 # Security config
-SECRET_KEY = "1234"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 1440  # 1 day
+SECRET_KEY = os.getenv("SECRET_KEY", "1234")
+ALGORITHM = os.getenv("ALGORITHM", "HS256")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "1440"))  # 1 day
 
 # Argon2 password hasher
 ph = argon2.PasswordHasher()
