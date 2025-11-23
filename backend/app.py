@@ -95,8 +95,8 @@ def setup_session(
         if "sales" in role.lower():
             session_data = {
                 "mode": "full",
-                "sales_round_1": SalesInterviewSession(role=role, session_id=session_id, round_type="hiring_manager", rounds=3),
-                "sales_round_2": SalesInterviewSession(role=role, session_id=session_id + "_sr2", round_type="senior_leadership", rounds=3),
+                "sales_round_1": SalesInterviewSession(role=role, session_id=session_id, round_type="hiring_manager", rounds=2),
+                "sales_round_2": SalesInterviewSession(role=role, session_id=session_id + "_sr2", round_type="senior_leadership", rounds=2),
                 "current": "sales_round_1",
                 "role": role
             }
@@ -119,13 +119,13 @@ def setup_session(
     elif custom_round == "behavioral":
         # Check if it's for Sales Rep role (Senior Leadership) or regular HR
         if "sales" in role.lower():
-            user_sessions[user] = SalesInterviewSession(role=role, session_id=session_id, round_type="senior_leadership", rounds=5)
+            user_sessions[user] = SalesInterviewSession(role=role, session_id=session_id, round_type="senior_leadership", rounds=2)
         else:
             user_sessions[user] = HRInterviewSession(role=role, rounds=5, session_id=session_id)
     elif custom_round == "coding":
         user_sessions[user] = CodingSession(role=role, rounds=3)
     elif custom_round == "sales":
-        user_sessions[user] = SalesInterviewSession(role=role, session_id=session_id, round_type="hiring_manager", rounds=5)
+        user_sessions[user] = SalesInterviewSession(role=role, session_id=session_id, round_type="hiring_manager", rounds=3)
     else:
         raise HTTPException(status_code=400, detail="Invalid round type")
     
@@ -749,18 +749,11 @@ async def handle_code_explanation(audio: UploadFile = File(...), user: str = Dep
     session.explanation_history.append({"user": user_text})
 
     from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
+    from utils.coding_constraints import sanitize_coding_response, create_coding_prompt_constraint
 
     messages = [
-        # CHANGE: Updated System Message to handle doubts/clarifications
-        SystemMessage(content="""
-        You are a supportive technical interviewer. 
-        - If the candidate asks a doubt or asks you to explain the question, clarify the problem statement simply without giving away the full solution.
-        - If the candidate is explaining their approach, listen and give brief, encouraging feedback or hints if they are stuck.
-        - Keep your responses concise and conversational.
-        focus on guiding the candidate rather than providing direct answers.
-        important note: never and dont give the solution and hint or logic to the candidate.
-        important note: dont say about the issue with the formatting of the resume provided
-        """),
+        # ✅ Use strict constraint system to prevent giving away solutions
+        SystemMessage(content=create_coding_prompt_constraint()),
         HumanMessage(content="Problem:\n" + json.dumps(session.history[-1]["problem"], indent=2)),
         HumanMessage(content="Current Code:\n" + session.history[-1]["code"]),
     ]
@@ -772,16 +765,18 @@ async def handle_code_explanation(audio: UploadFile = File(...), user: str = Dep
         elif "ai" in msg:
             messages.append(AIMessage(content=msg["ai"]))
 
-    response = code_llm.invoke(messages).content
-
-
+    raw_response = code_llm.invoke(messages).content
+    
+    # ✅ SANITIZE to ensure no hints/solutions slipped through
+    response, has_violation = sanitize_coding_response(raw_response)
 
     # 💾 Save AI response back to explanation history
     session.explanation_history.append({"ai": response})
 
     return {
         "user_text": user_text,
-        "response": response
+        "response": response,
+        "constraint_enforced": has_violation
     }
 
 

@@ -1,9 +1,11 @@
 """Interview session management service."""
 import json 
 import re
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any, List, Tuple
 
 from utils.vector_memory import VectorMemory
+from utils.off_topic_detector import detect_and_respond_to_offtopic
+from utils.confusion_detector import ConfusionDetector
 from chains.memory_interview_chain import memory_chain
 from config import llm
 from langchain_core.prompts import ChatPromptTemplate
@@ -47,6 +49,9 @@ class InterviewSession:
         self.round_type = "Technical" 
         self.session_id = session_id
         self.vector_memory = VectorMemory()
+        self.off_topic_count = 0  # Track off-topic responses
+        self.skipped_questions: List[str] = []  # Track skipped questions
+        self.skip_count = 0  # Track number of skips
         self.history: List[Dict[str, Optional[str]]] = [
             {'question': "Welcome to The Technical round of your Interview. How are You?", 'answer': None}
         ]
@@ -124,9 +129,119 @@ Respond with ONLY the follow-up question, nothing else."""
         self.vector_memory.add_qa(q, answer)
         self.current_round += 1
 
+    def skip_question(self) -> Dict[str, Any]:
+        """
+        Allow candidate to skip the current question and move to the next one.
+        Skipped questions are tracked but not repeated.
+        
+        Returns:
+            Dictionary with skip confirmation and next question
+        """
+        current_question = self.history[-1]['question']
+        
+        # Mark as skipped
+        self.skipped_questions.append(current_question)
+        self.skip_count += 1
+        self.history[-1]['answer'] = "[SKIPPED]"
+        self.current_round += 1
+        
+        # Track skip in meta
+        if "skipped_questions" not in self.meta:
+            self.meta["skipped_questions"] = []
+        self.meta["skipped_questions"].append({
+            "question": current_question,
+            "skipped_at_round": self.current_round
+        })
+        
+        # Get next question (will be different from skipped one)
+        if self.current_round < self.rounds:
+            next_q = self.ask_question()
+            return {
+                "status": "skipped",
+                "skipped_count": self.skip_count,
+                "message": f"Question skipped. Moving to next question.",
+                "next_question": next_q
+            }
+        else:
+            return {
+                "status": "skipped",
+                "skipped_count": self.skip_count,
+                "message": "All questions completed. Interview ending.",
+                "next_question": None,
+                "interview_complete": True
+            }
+
+    def check_confusion(self, answer: str) -> Tuple[bool, str, float, str]:
+        """
+        Check if candidate is confused and provide guidance if needed.
+        
+        Args:
+            answer: Candidate's answer to analyze
+            
+        Returns:
+            Tuple of (is_confused, confusion_type, confidence_score, guidance_message)
+        """
+        current_question = self.history[-1]['question'] if self.history else ""
+        is_confused, confusion_type, confusion_score = ConfusionDetector.detect_confusion(
+            answer, 
+            current_question
+        )
+        
+        guidance = ""
+        if is_confused:
+            guidance = ConfusionDetector.generate_guidance(
+                confusion_type,
+                current_question,
+                answer
+            )
+            # Track confusion in meta
+            if "confusion_count" not in self.meta:
+                self.meta["confusion_count"] = 0
+            self.meta["confusion_count"] += 1
+        
+        return is_confused, confusion_type, confusion_score, guidance
+
+    def provide_example(self) -> str:
+        """
+        Provide an example to help confused candidate.
+        
+        Returns:
+            Example answer structure
+        """
+        current_question = self.history[-1]['question'] if self.history else ""
+        example = ConfusionDetector.generate_example(current_question, self.role)
+        return example
+
     def is_complete(self) -> bool:
         """Check if interview rounds are complete."""
         return self.current_round >= self.rounds
+  
+    def check_if_off_topic(self, answer: str) -> Dict[str, Any]:
+        """
+        Check if candidate's answer is off-topic.
+        
+        Args:
+            answer: Candidate's answer to check
+            
+        Returns:
+            Dictionary with off-topic detection result and guidance message
+        """
+        if not self.history:
+            return {"is_off_topic": False, "response": None}
+        
+        last_question = self.history[-1].get('question', '')
+        
+        result = detect_and_respond_to_offtopic(
+            answer, 
+            last_question, 
+            interview_type=self.round_type.lower()
+        )
+        
+        if result["is_off_topic"]:
+            self.off_topic_count += 1
+            self.meta['off_topic_responses'] = self.meta.get('off_topic_responses', 0) + 1
+        
+        return result
   
     def summary(self) -> List[Dict[str, Optional[str]]]:
         """Get interview history summary."""

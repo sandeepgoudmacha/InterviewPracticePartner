@@ -4,6 +4,8 @@ from .resume_parser import parse_resume_with_llm, extract_text_from_pdf
 from .confidence import get_confidence_score
 from .vector_memory import VectorMemory
 from .sanitize import sanitize_for_json, safe_json_dumps
+from .off_topic_detector import detect_and_respond_to_offtopic, OffTopicDetector
+from .confusion_detector import ConfusionDetector
 
 __all__ = [
     "transcribe",
@@ -13,4 +15,7 @@ __all__ = [
     "VectorMemory",
     "sanitize_for_json",
     "safe_json_dumps",
+    "detect_and_respond_to_offtopic",
+    "OffTopicDetector",
+    "ConfusionDetector",
 ]

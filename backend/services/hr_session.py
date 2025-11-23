@@ -25,6 +25,8 @@ class HRInterviewSession:
         self.rounds = rounds
         self.meta = {} 
         self.round_type = "HR"
+        self.skipped_questions: List[str] = []  # Track skipped questions
+        self.skip_count = 0  # Track number of skips
         self.history: List[Dict[str, Optional[str]]] = [
             {"question": "Welcome to the HR round of your interview. Tell me about your strengths and weaknesses.", "answer": None}
         ]
@@ -95,6 +97,47 @@ Respond with ONLY the follow-up question, nothing else."""
         ]).content
         
         return followup_question
+
+    def skip_question(self) -> Dict[str, Any]:
+        """
+        Allow candidate to skip the current question and move to the next one.
+        
+        Returns:
+            Dictionary with skip confirmation and next question
+        """
+        current_question = self.history[-1]['question']
+        
+        # Mark as skipped
+        self.skipped_questions.append(current_question)
+        self.skip_count += 1
+        self.history[-1]['answer'] = "[SKIPPED]"
+        self.current_round += 1
+        
+        # Track skip in meta
+        if "skipped_questions" not in self.meta:
+            self.meta["skipped_questions"] = []
+        self.meta["skipped_questions"].append({
+            "question": current_question,
+            "skipped_at_round": self.current_round
+        })
+        
+        # Get next question
+        if self.current_round < self.rounds:
+            next_q = self.ask_question()
+            return {
+                "status": "skipped",
+                "skipped_count": self.skip_count,
+                "message": f"Question skipped. Moving to next question.",
+                "next_question": next_q
+            }
+        else:
+            return {
+                "status": "skipped",
+                "skipped_count": self.skip_count,
+                "message": "All HR questions completed.",
+                "next_question": None,
+                "hr_complete": True
+            }
 
     def generate_feedback(self) -> Dict[str, Any]:
         """Generate HR interview feedback."""

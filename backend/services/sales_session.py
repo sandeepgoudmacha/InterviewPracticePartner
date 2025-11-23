@@ -27,12 +27,14 @@ class SalesInterviewSession:
         self.rounds = rounds
         self.meta = {}
         self.vector_memory = VectorMemory()
+        self.skipped_questions: List[str] = []  # Track skipped questions
+        self.skip_count = 0  # Track number of skips
         
         # Set initial greeting based on round type
         if round_type == "hiring_manager":
-            greeting = "Welcome to the Sales Interview - Round 1: Hiring Manager Interview. Let's discuss your sales process, past performance, and how you handle specific situations. Ready to begin?"
+            greeting = "Welcome to the Sales Interview, Hiring Manager Interview. Ready to begin?"
         else:
-            greeting = "Welcome to the Sales Interview - Round 2: Senior Leadership Interview. This is our final assessment round. We'll discuss your fit with our team and company vision. Let's get started!"
+            greeting = "Welcome to the Sales Interview,Senior Leadership Interview. Let's get started!"
         
         self.history: List[Dict[str, Optional[str]]] = [{"question": greeting, "answer": None}]
 
@@ -56,9 +58,8 @@ Generate a medium but fair question that evaluates:
 - Customer relationship management
 - Closing techniques
 - Experience with different sales stages
-
-NOTE:
-    dont always mention this is an behavioral question, ask a small and concise question.
+NOTE: Ask a small and concise question. very short and to the point.
+NOTE: Dont always mention this is an behavioral question, ask a small and concise question.
 
 Ask ONE specific behavioral question that requires a detailed answer. Reference real scenarios they've faced.
 Keep it conversational and professional."""
@@ -151,6 +152,48 @@ Keep it conversational (1-2 sentences)."""
         ]).content
         
         return followup_question
+
+    def skip_question(self) -> Dict[str, Any]:
+        """
+        Allow candidate to skip the current question and move to the next one.
+        
+        Returns:
+            Dictionary with skip confirmation and next question
+        """
+        current_question = self.history[-1]['question']
+        
+        # Mark as skipped
+        self.skipped_questions.append(current_question)
+        self.skip_count += 1
+        self.history[-1]['answer'] = "[SKIPPED]"
+        self.current_round += 1
+        
+        # Track skip in meta
+        if "skipped_questions" not in self.meta:
+            self.meta["skipped_questions"] = []
+        self.meta["skipped_questions"].append({
+            "question": current_question,
+            "skipped_at_round": self.current_round
+        })
+        
+        # Get next question
+        if self.current_round < self.rounds:
+            next_q = self.ask_question()
+            return {
+                "status": "skipped",
+                "skipped_count": self.skip_count,
+                "message": f"Question skipped. Moving to next question.",
+                "next_question": next_q
+            }
+        else:
+            return {
+                "status": "skipped",
+                "skipped_count": self.skip_count,
+                "message": f"All {self.round_type} questions completed.",
+                "next_question": None,
+                "round_complete": True
+            }
+
 
     def is_complete(self) -> bool:
         """Check if this round is complete."""

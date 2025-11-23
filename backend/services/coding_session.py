@@ -4,6 +4,7 @@ import json
 from typing import List, Dict, Any, Optional
 
 from services.feedback_service import generate_coding_feedback
+from utils.coding_constraints import sanitize_coding_response, create_coding_prompt_constraint
 
 
 class CodingSession:
@@ -96,3 +97,61 @@ class CodingSession:
             Dictionary with feedback scores and comments
         """
         return generate_coding_feedback(self.history)
+
+    def generate_guidance_question(self, candidate_answer: str) -> Optional[str]:
+        """
+        Generate a Socratic/guiding question for the candidate without giving away the solution.
+        
+        Args:
+            candidate_answer: Candidate's approach or answer
+            
+        Returns:
+            Guided question or None
+        """
+        from config import llm
+        from langchain_core.messages import SystemMessage, HumanMessage
+        
+        if not self.history:
+            return None
+        
+        current_problem = self.history[-1]["problem"]
+        problem_title = current_problem.get("title", "Problem")
+        problem_desc = current_problem.get("description", "")
+        
+        guidance_prompt = f"""Based on the candidate's approach to this coding problem, generate ONE Socratic question to guide them deeper WITHOUT giving away the solution.
+
+Problem: {problem_title}
+Description: {problem_desc}
+
+Candidate said: "{candidate_answer}"
+
+Generate a single thought-provoking question that:
+- Helps them think deeper about the problem
+- Makes them reconsider edge cases or constraints
+- Guides them to discover patterns themselves
+- Never reveals the solution, algorithm, or data structure to use
+
+Keep it short (1-2 sentences) and Socratic in nature."""
+
+        response = llm.invoke([
+            SystemMessage(content=create_coding_prompt_constraint()),
+            HumanMessage(content=guidance_prompt)
+        ]).content
+        
+        # Sanitize to ensure no hints slipped through
+        sanitized_response, has_violation = sanitize_coding_response(response)
+        
+        if has_violation:
+            # Fallback to generic Socratic questions if LLM violated constraints
+            generic_questions = [
+                "Let's break this down further. What's the smallest example of this problem?",
+                "Good thinking. Now, what information do you need to track to solve this?",
+                "That's a valid start. What happens with edge cases or larger inputs?",
+                "I like where you're going. What would you need to compare or evaluate?",
+                "Keep exploring. What pattern do you see if you walk through a few examples?",
+                "Interesting approach. What would be the most challenging part to implement?",
+            ]
+            import random
+            return random.choice(generic_questions)
+        
+        return sanitized_response

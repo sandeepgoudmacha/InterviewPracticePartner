@@ -196,7 +196,7 @@ def generate_coding_feedback(history: List[Dict[str, Any]]) -> Dict[str, Any]:
     prompt = PromptTemplate(
         input_variables=["description", "function_signature", "code"],
         template="""
-You are a senior software engineer evaluating a candidate's coding submission.
+You are a software engineer evaluating a candidate's coding submission.
 
 Problem:
 {description}
