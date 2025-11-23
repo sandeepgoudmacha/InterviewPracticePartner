@@ -1,214 +1,278 @@
 # Interview Practice Partner
 
-An AI-powered interview preparation platform that helps candidates practice and improve their interview skills through realistic AI-driven interviews.
+An **AI-powered mock interview platform** that helps candidates prepare for job interviews with role-specific, multi-round interviews. Supports SDE (Technical → Coding → HR rounds), Data Scientist, Sales Representative (Hiring Manager → Senior Leadership rounds), and more with intelligent, personalized questions across technical, behavioral, coding, and sales domains.
 
-## 🌟 Features
+## 📋 Quick Navigation
 
-- **Multiple Interview Types**
-  - Technical/Coding interviews
-  - HR behavioral interviews
-  - Sales interviews
-  - Memory-based challenges
+- [Quick Start](#quick-start)
+- [Setup & Installation](#setup--installation)
+- [Architecture](#architecture)
+- [Design Decisions](#design-decisions)
 
-- **AI-Powered Feedback**
-  - Real-time response evaluation
-  - Confidence scoring based on audio analysis
-  - Comprehensive feedback reports
-  - Performance analytics
+---
 
-- **Technical Capabilities**
-  - Resume parsing and analysis
-  - Speech recognition (Whisper)
-  - Attention tracking
-  - Vector-based Q&A memory
+## ⚡ Quick Start
 
-## 🏗️ Project Structure
+### Few-Minutes Setup
 
-The project follows a modern full-stack architecture:
+```bash
+# 1. Clone repository
+git clone https://github.com/sandeepgoudmacha/InterviewPracticePartner.git
+cd InterviewPracticePartner
 
-```
-📦 Interview Practice Partner
-├── 📂 backend/                # FastAPI backend
-│   ├── config/               # Configuration module
-│   ├── services/             # Business logic
-│   ├── routes/               # API endpoints
-│   ├── models/               # Data models
-│   ├── utils/                # Utility functions
-│   └── chains/               # LangChain interview chains
-│
-└── 📂 frontend/              # React/TypeScript frontend
-    └── src/
-        ├── components/       # React components
-        ├── pages/            # Page components
-        ├── services/         # API services
-        ├── constants/        # App constants
-        ├── types/            # TypeScript types
-        └── hooks/            # Custom React hooks
+# 2. Backend setup
+cd backend
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+
+# 3. Create .env file
+echo "MONGO_URL=your_mongo_url" > .env
+echo "DEFAULT_GROQ_API_KEY=your_groq_key" >> .env
+
+# 4. Frontend setup (new terminal)
+cd frontend
+npm install
+
+# 5. Run both (in separate terminals)
+# Terminal 1: cd backend && uvicorn app:app --reload --port 5000
+# Terminal 2: cd frontend && npm run dev
 ```
 
-**📖 For detailed structure information, see [PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md)**
+Access at `http://localhost:5173`
 
-## 🚀 Quick Start
+---
+
+## 🛠️ Tech Stack
+
+### Backend
+| Component | Technology |
+|-----------|-----------|
+| Framework | FastAPI (async Python) |
+| LLM | LangChain + Groq API (LLaMA 3.3 70B) |
+| Database | MongoDB + PyMongo |
+| Speech-to-Text | OpenAI Whisper |
+| Confidence Scoring | librosa |
+| NLP | Sentence Transformers |
+| Authentication | JWT + Argon2 |
+| Document Processing | PyMuPDF |
+
+### Frontend
+| Component | Technology |
+|-----------|-----------|
+| Framework | React 18+ with TypeScript |
+| Build Tool | Vite |
+| UI Components | Chakra UI |
+| Vision | Face-api.js + TensorFlow.js |
+| Code Editor | Monaco Editor |
+| HTTP | Axios + Fetch API |
+| Styling | Tailwind CSS + Emotion |
+
+---
+
+## 🏗️ Architecture
+
+### System Overview
+
+```
+┌─────────────────────────────────────────────────────────┐
+│          Frontend (React + TypeScript + Vite)           │
+│  - Audio recording & playback                           │
+│  - Face detection (attention tracking)                  │
+│  - Code editor (Monaco)                                 │
+│  - Feedback dashboard                                   │
+└────────────────────┬────────────────────────────────────┘
+                     │ REST API (HTTP/HTTPS)
+                     │
+┌────────────────────▼────────────────────────────────────┐
+│           Backend (FastAPI + LangChain)                 │
+│  ┌──────────────────────────────────────────────────┐   │
+│  │  API Layer - Interview, Coding, Feedback         │   │
+│  ├──────────────────────────────────────────────────┤   │
+│  │  Session Management - User state & history       │   │
+│  ├──────────────────────────────────────────────────┤   │
+│  │  Services - Interview, Coding, HR, Sales, etc.   │   │
+│  ├──────────────────────────────────────────────────┤   │
+│  │  Utilities - Audio, Detection, Constraints       │   │
+│  ├──────────────────────────────────────────────────┤   │
+│  │  LangChain Chains - Question generation          │   │
+│  └──────────────────────────────────────────────────┘   │
+└────────────────────┬────────────────────────────────────┘
+                     │
+        ┌────────────┼────────────┐
+        │            │            │
+   ┌────▼────┐  ┌───▼────┐  ┌───▼────┐
+   │ MongoDB  │  │ Groq   │  │Whisper │
+   │ Storage  │  │ API    │  │Speech  │
+   └──────────┘  └────────┘  └────────┘
+```
+
+### Backend Services
+
+**Interview Session Management**:
+- **InterviewSession**: Technical Q&A with memory-based context
+  - SDE: Algorithm & system design questions
+  - Data Scientist: ML & statistics questions
+  - Frontend/Backend: Role-specific technical questions
+- **CodingSession**: Live coding with 2-3 problem rounds
+  - Adaptive difficulty based on role
+  - Real-time code evaluation
+  - Constraint enforcement (no hints)
+- **HRSession**: Behavioral interview (shared across all roles)
+  - Communication assessment
+  - Team collaboration evaluation
+  - Growth mindset exploration
+- **SalesSession**: Sales-specific two-round format
+  - Round 1 (Hiring Manager): 2 questions on sales process
+  - Round 2 (Senior Leadership): 2 questions on leadership fit
+
+---
+
+## 🚀 Setup & Installation
 
 ### Prerequisites
-- Python 3.10+
-- Node.js 18+
-- MongoDB
-- Groq API Key
 
-### Backend Setup
+```bash
+# Check versions
+python --version    # Should be 3.10 or higher
+node --version      # Should be 18 or higher
+```
+
+- **MongoDB**: Cloud (Atlas) or local instance
+- **Groq API Key**: Free tier at https://groq.com
+- **Git**: For cloning repository
+
+### Step 1: Clone Repository
+
+```bash
+git clone https://github.com/sandeepgoudmacha/InterviewPracticePartner.git
+cd InterviewPracticePartner
+```
+
+### Step 2: Backend Setup
 
 ```bash
 cd backend
+
+# Create virtual environment
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Activate (choose based on OS)
+# Windows:
+venv\Scripts\activate
+# macOS/Linux:
+source venv/bin/activate
+
+# Install dependencies
 pip install -r requirements.txt
 ```
 
-### Frontend Setup
+### Step 3: Frontend Setup
 
 ```bash
-cd frontend
+cd ../frontend
 npm install
 ```
 
-### Environment Variables
+### Step 4: Environment Configuration
 
-Create `.env` in backend directory:
-```
-MONGO_URL=<your-mongodb-connection-string>
-DB_NAME=interview_partner
-DEFAULT_GROQ_API_KEY=<your-groq-api-key>
-SECRET_KEY=<your-secret-key>
+Create `backend/.env`:
+
+```env
+# MongoDB Configuration
+MONGO_URL=mongodb+srv://username:password@cluster.mongodb.net/?retryWrites=true&w=majority
+DB_NAME=interview_partner_db
+
+# Groq API Configuration
+DEFAULT_GROQ_API_KEY=gsk_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# JWT Configuration
+SECRET_KEY=your_secret_key_change_in_production
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=1440
+
+# Server Configuration
+PORT=5000
+HOST=0.0.0.0
 ```
 
-Create `.env.local` in frontend directory:
-```
-VITE_API_URL=http://localhost:8000
+Create `frontend/.env.local`:
+
+```env
+VITE_API_BASE_URL=http://localhost:5000
+VITE_APP_NAME=Interview Practice Partner
 ```
 
-### Running Development Servers
+### Step 5: Get API Keys
 
-**Terminal 1 - Backend:**
+**Groq API Key** (Free): Go to https://groq.com
+**MongoDB** (Free): Go to https://www.mongodb.com/cloud/atlas
+
+### Step 6: Run the Application
+
+**Terminal 1 - Backend**:
 ```bash
 cd backend
-python -m uvicorn app:app --reload
+source venv/bin/activate  # or venv\Scripts\activate on Windows
+uvicorn app:app --reload --port 5000
 ```
 
-**Terminal 2 - Frontend:**
+**Terminal 2 - Frontend**:
 ```bash
 cd frontend
 npm run dev
 ```
 
-Backend will be available at `http://localhost:8000`
-Frontend will be available at `http://localhost:5173`
-
-## 🛠️ Technology Stack
-
-### Backend
-- **Framework**: FastAPI
-- **LLM**: Groq (Llama 3.3 70B)
-- **Database**: MongoDB
-- **AI/ML**: LangChain, HuggingFace Embeddings
-- **Audio**: Whisper (OpenAI), librosa
-- **Auth**: JWT + Argon2
-- **Server**: Uvicorn
-
-### Frontend
-- **Framework**: React 18+
-- **Language**: TypeScript
-- **Build Tool**: Vite
-- **Styling**: Tailwind CSS
-- **Real-time**: Face detection (face-api.js)
-- **State**: Component-based with hooks
-
-## 📚 Documentation
-
-- [PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md) - Complete project structure guide
-- [RESTRUCTURING_SUMMARY.md](./RESTRUCTURING_SUMMARY.md) - What changed in recent restructuring
-- [QUICKREF.md](./QUICKREF.md) - Quick reference for developers
-
-## 🔄 Recent Changes
-
-The project was recently restructured for better maintainability:
-
-### ✅ Completed
-- Organized backend into logical modules (config, utils, services, routes, chains)
-- Established frontend service layer and type system
-- Created comprehensive documentation
-- Enhanced `.gitignore`
-
-### ⏳ In Progress
-- Updating all imports in existing files
-- Migrating session services
-- Full test suite validation
-
-See [RESTRUCTURING_SUMMARY.md](./RESTRUCTURING_SUMMARY.md) for details.
-
-## 📝 API Endpoints
-
-### Authentication
-- `POST /signup` - Register new user
-- `POST /login` - User login
-- `GET /profile` - Get user profile
-
-### Interviews
-- `POST /interview/start` - Start new interview
-- `POST /interview/submit-answer` - Submit interview response
-- `GET /interview/{id}` - Get interview details
-- `GET /interviews` - List user interviews
-
-### Feedback
-- `GET /feedback/{interview_id}` - Get interview feedback
-
-## 🧪 Testing
-
-```bash
-# Backend tests
-cd backend
-pytest
-
-# Frontend tests
-cd frontend
-npm run test
-```
-
-## 🐳 Docker
-
-Run with Docker Compose:
-
-```bash
-docker-compose up
-```
-
-## 📦 Deployment
-
-### Heroku
-The project includes a `Procfile` for Heroku deployment.
-
-### Docker
-Both backend and frontend have Dockerfile configurations.
-
-## 🤝 Contributing
-
-1. Create a feature branch
-2. Make your changes
-3. Submit a pull request
-
-## 📄 License
-
-See LICENSE file for details
-
-## 👥 Team
-
-Built with ❤️ for interview preparation
-
-## 🆘 Support
-
-For issues and questions, please use the project's issue tracker.
+Access at `http://localhost:5173`
 
 ---
 
-**Status**: MVP Phase - Core features implemented and tested
-**Last Updated**: November 2025
+## 🎨 Design Decisions
+
+### 1. Service-Oriented Architecture
+**Why**: Each interview type has unique logic
+- Easy to test independently
+- Simple to add new interview types
+- Clear separation of concerns
+
+### 2. LangChain Memory-Based Q&A
+**Why**: Context-aware questions based on resume
+- Conversational history tracking
+- Intelligent follow-ups
+- Reduced API calls with caching
+
+### 3. JSON Sanitization Layer
+**Why**: Prevent NaN/Infinity errors
+- All responses wrapped in `_response()`
+- Handles edge cases in scoring
+- Ensures consistent format
+
+### 4. Multi-Layer Coding Constraints
+**Why**: Prevent solution hints in coding
+- Strict system prompt
+- Response sanitization
+- Fallback Guiding questions
+
+### 5. Attention Tracking with Smoothing
+**Why**: Reduce false "distracted" alerts
+- Consistency counter (2 detections needed)
+- Face in 10-90% of frame
+- 3 consecutive non-detections to mark distracted
+
+### 6. Vector Memory for Context
+**Why**: Efficient off-topic detection
+- Semantic similarity search
+- Scalable to many responses
+- Fast detection
+
+---
+
+## 🚀 Future Improvements
+
+- [ ] **Deploy to production**
+- [ ] Real-time transcription (WebSocket)
+- [ ] Advanced analytics dashboard
+- [ ] LinkedIn & job portal integration
+- [ ] Resume AI review
+
+
