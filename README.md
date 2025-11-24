@@ -4,10 +4,13 @@ An **AI-powered mock interview platform** that helps candidates prepare for job 
 
 ## 📋 Quick Navigation
 
-- [Quick Start](#quick-start)
-- [Setup & Installation](#setup--installation)
-- [Architecture](#architecture)
-- [Design Decisions](#design-decisions)
+- [Quick Start](#⚡-quick-start)
+- [Setup & Installation](#🚀-setup-and-installation)
+- [Tech Stack](#🛠️-tech-stack)
+- [Architecture](#🏗️-architecture)
+- [Design Decisions](#🎨-design-decisions)
+- [Platform Features](#🎯-platform-features)
+- [Future Improvements](#🚀-future-improvements)
 
 ---
 
@@ -37,6 +40,105 @@ npm install
 # 5. Run both (in separate terminals)
 # Terminal 1: cd backend && uvicorn app:app --reload --port 5000
 # Terminal 2: cd frontend && npm run dev
+```
+
+Access at `http://localhost:5173`
+
+---
+
+## 🚀 Setup and Installation
+
+### Prerequisites
+
+```bash
+# Check versions
+python --version    # Should be 3.10 or higher
+node --version      # Should be 18 or higher
+```
+
+- **MongoDB**: Cloud (Atlas) or local instance
+- **Groq API Key**: Free tier at https://groq.com
+- **Git**: For cloning repository
+
+### Step 1: Clone Repository
+
+```bash
+git clone https://github.com/sandeepgoudmacha/InterviewPracticePartner.git
+cd InterviewPracticePartner
+```
+
+### Step 2: Backend Setup
+
+```bash
+cd backend
+
+# Create virtual environment
+python -m venv venv
+
+# Activate (choose based on OS)
+# Windows:
+venv\Scripts\activate
+# macOS/Linux:
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+### Step 3: Frontend Setup
+
+```bash
+cd ../frontend
+npm install
+```
+
+### Step 4: Environment Configuration
+
+Create `backend/.env`:
+
+```env
+# MongoDB Configuration
+MONGO_URL=mongodb+srv://username:password@cluster.mongodb.net/?retryWrites=true&w=majority
+DB_NAME=interview_partner_db
+
+# Groq API Configuration
+DEFAULT_GROQ_API_KEY=gsk_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# JWT Configuration
+SECRET_KEY=your_secret_key_change_in_production
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=1440
+
+# Server Configuration
+PORT=5000
+HOST=0.0.0.0
+```
+
+Create `frontend/.env.local`:
+
+```env
+VITE_API_BASE_URL=http://localhost:5000
+VITE_APP_NAME=Interview Practice Partner
+```
+
+### Step 5: Get API Keys
+
+**Groq API Key** (Free): Go to https://groq.com
+**MongoDB** (Free): Go to https://www.mongodb.com/cloud/atlas
+
+### Step 6: Run the Application
+
+**Terminal 1 - Backend**:
+```bash
+cd backend
+source venv/bin/activate  # or venv\Scripts\activate on Windows
+uvicorn app:app --reload --port 5000
+```
+
+**Terminal 2 - Frontend**:
+```bash
+cd frontend
+npm run dev
 ```
 
 Access at `http://localhost:5173`
@@ -188,7 +290,7 @@ Access at `http://localhost:5173`
     │ Coding?     │        │ Off-topic or │
     │ (Constraint │        │ Confused?    │
     │ Check)      │        └──────┬───────┘
-    └────┬────────┘               │
+    └────┬────────┘                │
          │ YES                     │ YES
          ▼                         ▼
     ┌─────────────────┐    ┌─────────────────┐
@@ -198,8 +300,8 @@ Access at `http://localhost:5173`
     │ - No solutions  │    └─────────────────┘
     │ - Only guidance │               │
     └────┬────────────┘               │
-         │ VIOLATION?                  │
-         ▼                             │
+         │ VIOLATION?                 │
+         ▼                            │
     ┌──────────────┐                  │
     │ Ask Guiding  │                  │
     │ Questions    │                  │
@@ -237,105 +339,6 @@ Access at `http://localhost:5173`
                             │   User Receives Report │
                             └────────────────────────┘
 ```
-
----
-
-## 🚀 Setup & Installation
-
-### Prerequisites
-
-```bash
-# Check versions
-python --version    # Should be 3.10 or higher
-node --version      # Should be 18 or higher
-```
-
-- **MongoDB**: Cloud (Atlas) or local instance
-- **Groq API Key**: Free tier at https://groq.com
-- **Git**: For cloning repository
-
-### Step 1: Clone Repository
-
-```bash
-git clone https://github.com/sandeepgoudmacha/InterviewPracticePartner.git
-cd InterviewPracticePartner
-```
-
-### Step 2: Backend Setup
-
-```bash
-cd backend
-
-# Create virtual environment
-python -m venv venv
-
-# Activate (choose based on OS)
-# Windows:
-venv\Scripts\activate
-# macOS/Linux:
-source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-```
-
-### Step 3: Frontend Setup
-
-```bash
-cd ../frontend
-npm install
-```
-
-### Step 4: Environment Configuration
-
-Create `backend/.env`:
-
-```env
-# MongoDB Configuration
-MONGO_URL=mongodb+srv://username:password@cluster.mongodb.net/?retryWrites=true&w=majority
-DB_NAME=interview_partner_db
-
-# Groq API Configuration
-DEFAULT_GROQ_API_KEY=gsk_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-# JWT Configuration
-SECRET_KEY=your_secret_key_change_in_production
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=1440
-
-# Server Configuration
-PORT=5000
-HOST=0.0.0.0
-```
-
-Create `frontend/.env.local`:
-
-```env
-VITE_API_BASE_URL=http://localhost:5000
-VITE_APP_NAME=Interview Practice Partner
-```
-
-### Step 5: Get API Keys
-
-**Groq API Key** (Free): Go to https://groq.com
-**MongoDB** (Free): Go to https://www.mongodb.com/cloud/atlas
-
-### Step 6: Run the Application
-
-**Terminal 1 - Backend**:
-```bash
-cd backend
-source venv/bin/activate  # or venv\Scripts\activate on Windows
-uvicorn app:app --reload --port 5000
-```
-
-**Terminal 2 - Frontend**:
-```bash
-cd frontend
-npm run dev
-```
-
-Access at `http://localhost:5173`
 
 ---
 
@@ -387,6 +390,12 @@ Access at `http://localhost:5173`
 - **Confusion Detection**: Detects user confusion and offers clarification
 - **Never Gives Solutions**: Coding constraints ensure AI only provides guidance, never answers
 - **Guiding Questions**: When stuck, AI asks probing questions (not solutions)
+- **Confidence Scoring**: Real-time display of user confidence level (0-100%) based on:
+  - Speech clarity and articulation (librosa audio analysis)
+  - Answer coherence and relevance
+  - Response time and hesitation patterns
+  - Overall delivery quality
+  - Shown live during chat for self-awareness
 - **Post-Interview Feedback**: Comprehensive report with score, strengths, and areas to improve
 - **Voice-First Interaction**: Audio-based interviews with real-time transcription
 - **Attention Tracking**: Face detection monitors focus during interview
@@ -397,8 +406,6 @@ Access at `http://localhost:5173`
 - Offer clarification and context re-explanation
 - Provide skip option (don't repeat same question)
 - Ask simpler follow-ups to re-establish understanding
-- Suggest alternative interview types if needed
-- Guide through role/round selection
 
 **Efficient User** (Wants quick results)
 - Reduced wait time between questions
