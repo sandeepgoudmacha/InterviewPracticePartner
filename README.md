@@ -4,7 +4,7 @@ An **AI-powered mock interview platform** that helps candidates prepare for job 
 
 ## 📋 Quick Navigation
 
-- [Quick Start](#⚡-quick-start)
+- [Quick Start](#quick-start)
 - [Setup & Installation](#🚀-setup-and-installation)
 - [Tech Stack](#🛠️-tech-stack)
 - [Architecture](#🏗️-architecture)
@@ -14,7 +14,7 @@ An **AI-powered mock interview platform** that helps candidates prepare for job 
 
 ---
 
-## ⚡ Quick Start
+## Quick Start
 
 ### Few-Minutes Setup
 
