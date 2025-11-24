@@ -46,7 +46,7 @@ Access at `http://localhost:5173`
 
 ---
 
-## 🚀 Setup and Installation
+## 🚀 Setup & Installation
 
 ### Prerequisites
 
