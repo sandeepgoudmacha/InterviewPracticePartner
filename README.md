@@ -387,6 +387,12 @@ Access at `http://localhost:5173`
 - **Confusion Detection**: Detects user confusion and offers clarification
 - **Never Gives Solutions**: Coding constraints ensure AI only provides guidance, never answers
 - **Guiding Questions**: When stuck, AI asks probing questions (not solutions)
+- **Confidence Scoring**: Real-time display of user confidence level (0-100%) based on:
+  - Speech clarity and articulation (librosa audio analysis)
+  - Answer coherence and relevance
+  - Response time and hesitation patterns
+  - Overall delivery quality
+  - Shown live during chat for self-awareness
 - **Post-Interview Feedback**: Comprehensive report with score, strengths, and areas to improve
 - **Voice-First Interaction**: Audio-based interviews with real-time transcription
 - **Attention Tracking**: Face detection monitors focus during interview
