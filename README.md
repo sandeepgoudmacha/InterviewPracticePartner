@@ -43,6 +43,105 @@ Access at `http://localhost:5173`
 
 ---
 
+## 🚀 Setup & Installation
+
+### Prerequisites
+
+```bash
+# Check versions
+python --version    # Should be 3.10 or higher
+node --version      # Should be 18 or higher
+```
+
+- **MongoDB**: Cloud (Atlas) or local instance
+- **Groq API Key**: Free tier at https://groq.com
+- **Git**: For cloning repository
+
+### Step 1: Clone Repository
+
+```bash
+git clone https://github.com/sandeepgoudmacha/InterviewPracticePartner.git
+cd InterviewPracticePartner
+```
+
+### Step 2: Backend Setup
+
+```bash
+cd backend
+
+# Create virtual environment
+python -m venv venv
+
+# Activate (choose based on OS)
+# Windows:
+venv\Scripts\activate
+# macOS/Linux:
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+### Step 3: Frontend Setup
+
+```bash
+cd ../frontend
+npm install
+```
+
+### Step 4: Environment Configuration
+
+Create `backend/.env`:
+
+```env
+# MongoDB Configuration
+MONGO_URL=mongodb+srv://username:password@cluster.mongodb.net/?retryWrites=true&w=majority
+DB_NAME=interview_partner_db
+
+# Groq API Configuration
+DEFAULT_GROQ_API_KEY=gsk_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# JWT Configuration
+SECRET_KEY=your_secret_key_change_in_production
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=1440
+
+# Server Configuration
+PORT=5000
+HOST=0.0.0.0
+```
+
+Create `frontend/.env.local`:
+
+```env
+VITE_API_BASE_URL=http://localhost:5000
+VITE_APP_NAME=Interview Practice Partner
+```
+
+### Step 5: Get API Keys
+
+**Groq API Key** (Free): Go to https://groq.com
+**MongoDB** (Free): Go to https://www.mongodb.com/cloud/atlas
+
+### Step 6: Run the Application
+
+**Terminal 1 - Backend**:
+```bash
+cd backend
+source venv/bin/activate  # or venv\Scripts\activate on Windows
+uvicorn app:app --reload --port 5000
+```
+
+**Terminal 2 - Frontend**:
+```bash
+cd frontend
+npm run dev
+```
+
+Access at `http://localhost:5173`
+
+---
+
 ## 🛠️ Tech Stack
 
 ### Backend
@@ -237,105 +336,6 @@ Access at `http://localhost:5173`
                             │   User Receives Report │
                             └────────────────────────┘
 ```
-
----
-
-## 🚀 Setup & Installation
-
-### Prerequisites
-
-```bash
-# Check versions
-python --version    # Should be 3.10 or higher
-node --version      # Should be 18 or higher
-```
-
-- **MongoDB**: Cloud (Atlas) or local instance
-- **Groq API Key**: Free tier at https://groq.com
-- **Git**: For cloning repository
-
-### Step 1: Clone Repository
-
-```bash
-git clone https://github.com/sandeepgoudmacha/InterviewPracticePartner.git
-cd InterviewPracticePartner
-```
-
-### Step 2: Backend Setup
-
-```bash
-cd backend
-
-# Create virtual environment
-python -m venv venv
-
-# Activate (choose based on OS)
-# Windows:
-venv\Scripts\activate
-# macOS/Linux:
-source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-```
-
-### Step 3: Frontend Setup
-
-```bash
-cd ../frontend
-npm install
-```
-
-### Step 4: Environment Configuration
-
-Create `backend/.env`:
-
-```env
-# MongoDB Configuration
-MONGO_URL=mongodb+srv://username:password@cluster.mongodb.net/?retryWrites=true&w=majority
-DB_NAME=interview_partner_db
-
-# Groq API Configuration
-DEFAULT_GROQ_API_KEY=gsk_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-# JWT Configuration
-SECRET_KEY=your_secret_key_change_in_production
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=1440
-
-# Server Configuration
-PORT=5000
-HOST=0.0.0.0
-```
-
-Create `frontend/.env.local`:
-
-```env
-VITE_API_BASE_URL=http://localhost:5000
-VITE_APP_NAME=Interview Practice Partner
-```
-
-### Step 5: Get API Keys
-
-**Groq API Key** (Free): Go to https://groq.com
-**MongoDB** (Free): Go to https://www.mongodb.com/cloud/atlas
-
-### Step 6: Run the Application
-
-**Terminal 1 - Backend**:
-```bash
-cd backend
-source venv/bin/activate  # or venv\Scripts\activate on Windows
-uvicorn app:app --reload --port 5000
-```
-
-**Terminal 2 - Frontend**:
-```bash
-cd frontend
-npm run dev
-```
-
-Access at `http://localhost:5173`
 
 ---
 
