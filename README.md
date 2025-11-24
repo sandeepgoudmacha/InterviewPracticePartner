@@ -4,10 +4,13 @@ An **AI-powered mock interview platform** that helps candidates prepare for job 
 
 ## 📋 Quick Navigation
 
-- [Quick Start](#quick-start)
-- [Setup & Installation](#setup--installation)
-- [Architecture](#architecture)
-- [Design Decisions](#design-decisions)
+- [Quick Start](#⚡-quick-start)
+- [Setup & Installation](#🚀-setup-and-installation)
+- [Tech Stack](#🛠️-tech-stack)
+- [Architecture](#🏗️-architecture)
+- [Design Decisions](#🎨-design-decisions)
+- [Platform Features](#🎯-platform-features)
+- [Future Improvements](#🚀-future-improvements)
 
 ---
 
@@ -287,7 +290,7 @@ Access at `http://localhost:5173`
     │ Coding?     │        │ Off-topic or │
     │ (Constraint │        │ Confused?    │
     │ Check)      │        └──────┬───────┘
-    └────┬────────┘               │
+    └────┬────────┘                │
          │ YES                     │ YES
          ▼                         ▼
     ┌─────────────────┐    ┌─────────────────┐
@@ -297,8 +300,8 @@ Access at `http://localhost:5173`
     │ - No solutions  │    └─────────────────┘
     │ - Only guidance │               │
     └────┬────────────┘               │
-         │ VIOLATION?                  │
-         ▼                             │
+         │ VIOLATION?                 │
+         ▼                            │
     ┌──────────────┐                  │
     │ Ask Guiding  │                  │
     │ Questions    │                  │
