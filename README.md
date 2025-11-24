@@ -262,7 +262,7 @@ Access at `http://localhost:5173`
          ┌────────────────────────────────────┐
          │  3. Generate Question (LLM Agent)  │
          │  - LangChain chain with memory     │
-         │  - Groq API (LLaMA 3.3 70B)       │
+         │  - Groq API (LLaMA 3.3 70B)        │
          │  - Role-specific prompts           │
          └─────────────┬──────────────────────┘
                        │
