@@ -4,17 +4,17 @@ An **AI-powered mock interview platform** that helps candidates prepare for job 
 
 ## 📋 Quick Navigation
 
-- [Quick Start](#⚡-quick-start)
-- [Setup & Installation](#🚀-setup-and-installation)
-- [Tech Stack](#🛠️-tech-stack)
-- [Architecture](#🏗️-architecture)
-- [Design Decisions](#🎨-design-decisions)
-- [Platform Features](#🎯-platform-features)
-- [Future Improvements](#🚀-future-improvements)
+- [Quick Start](#quick-start)
+- [Setup & Installation](#setup-and-installation)
+- [Tech Stack](#tech-stack)
+- [Architecture](#architecture)
+- [Design Decisions](#design-decisions)
+- [Platform Features](#platform-features)
+- [Future Improvements](#future-improvements)
 
 ---
 
-## ⚡ Quick Start
+## Quick Start
 
 ### Few-Minutes Setup
 
@@ -46,7 +46,7 @@ Access at `http://localhost:5173`
 
 ---
 
-## 🚀 Setup and Installation
+## Setup and Installation
 
 ### Prerequisites
 
@@ -145,7 +145,7 @@ Access at `http://localhost:5173`
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Backend
 | Component | Technology |
@@ -172,7 +172,7 @@ Access at `http://localhost:5173`
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ### System Overview
 
@@ -342,7 +342,7 @@ Access at `http://localhost:5173`
 
 ---
 
-## 🎨 Design Decisions
+## Design Decisions
 
 ### 1. Service-Oriented Architecture
 **Why**: Each interview type has unique logic
@@ -382,7 +382,7 @@ Access at `http://localhost:5173`
 
 ---
 
-## 🎯 Platform Features
+## Platform Features
 
 ### Interview Intelligence
 - **Follow-up Questions**: Context-aware follow-ups based on previous answers
@@ -433,7 +433,7 @@ Access at `http://localhost:5173`
 
 ---
 
-## 🚀 Future Improvements
+## Future Improvements
 
 - [ ] **Deploy to production**
 - [ ] Real-time transcription (WebSocket)
