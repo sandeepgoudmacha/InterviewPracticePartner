@@ -397,8 +397,6 @@ Access at `http://localhost:5173`
 - Offer clarification and context re-explanation
 - Provide skip option (don't repeat same question)
 - Ask simpler follow-ups to re-establish understanding
-- Suggest alternative interview types if needed
-- Guide through role/round selection
 
 **Efficient User** (Wants quick results)
 - Reduced wait time between questions
