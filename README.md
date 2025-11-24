@@ -379,6 +379,53 @@ Access at `http://localhost:5173`
 
 ---
 
+## 🎯 Platform Features
+
+### Interview Intelligence
+- **Follow-up Questions**: Context-aware follow-ups based on previous answers
+- **Off-Topic Detection**: Identifies when users deviate from question context
+- **Confusion Detection**: Detects user confusion and offers clarification
+- **Never Gives Solutions**: Coding constraints ensure AI only provides guidance, never answers
+- **Guiding Questions**: When stuck, AI asks probing questions (not solutions)
+- **Post-Interview Feedback**: Comprehensive report with score, strengths, and areas to improve
+- **Voice-First Interaction**: Audio-based interviews with real-time transcription
+- **Attention Tracking**: Face detection monitors focus during interview
+
+### User Handling Strategies
+
+**Confused User** (Unsure what they want)
+- Offer clarification and context re-explanation
+- Provide skip option (don't repeat same question)
+- Ask simpler follow-ups to re-establish understanding
+- Suggest alternative interview types if needed
+- Guide through role/round selection
+
+**Efficient User** (Wants quick results)
+- Reduced wait time between questions
+- More questions per round
+- Higher difficulty progression
+- Skip explanations, provide direct questions
+- Fast feedback report generation
+
+**Chatty User** (Frequently goes off topic)
+- Gentle interrupts to stay focused
+- Time management hints
+- Summaries of key points instead of full replay
+- Auto-detect long responses and redirect
+- Encourage concise answers
+
+**Edge Case Users** (Goes off topic / Invalid inputs / Requests beyond bot's capabilities)
+- **Off-topic Detection**: Auto-detect and redirect to interview context
+- **Invalid Inputs**: Handle empty responses, corrupted audio gracefully
+- **Requests Beyond Capabilities**: 
+  - For coding: "I can only provide guidance, not solutions"
+  - For HR: "Let's focus on interview practice, not general advice"
+  - Offer clarification or rephrase the question
+- **Recovery Strategy**: Retry with simpler context, offer help options
+- **Fallback**: Provide relevant guidance question instead of failing
+
+---
+
 ## 🚀 Future Improvements
 
 - [ ] **Deploy to production**
